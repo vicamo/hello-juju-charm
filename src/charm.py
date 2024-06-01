@@ -53,7 +53,9 @@ class HelloJujuCharm(CharmBase):
         self.framework.observe(
             self.db.on.database_relation_joined, self._on_database_relation_joined
         )
-        self.framework.observe(self.db.on.master_changed, self._on_database_master_changed)
+        self.framework.observe(
+            self.db.on.master_changed, self._on_database_master_changed
+        )
 
     def _on_install(self, _):
         """Install prerequisites for the application"""
@@ -152,7 +154,13 @@ class HelloJujuCharm(CharmBase):
         check_output(["python3", "-m", "virtualenv", f"{VENV_ROOT}"])
         check_output([f"{VENV_ROOT}/bin/pip3", "install", "gunicorn"])
         check_output(
-            [f"{VENV_ROOT}/bin/pip3", "install", "-r", f"{APP_PATH}/requirements.txt", "--force"]
+            [
+                f"{VENV_ROOT}/bin/pip3",
+                "install",
+                "-r",
+                f"{APP_PATH}/requirements.txt",
+                "--force",
+            ]
         )
 
         # If a connection string exists (and relation is defined) then
@@ -187,7 +195,10 @@ class HelloJujuCharm(CharmBase):
 
         # Render the template files with the correct values
         rendered = template.render(
-            port=self._stored.port, project_root=APP_PATH, user="www-data", group="www-data"
+            port=self._stored.port,
+            project_root=APP_PATH,
+            user="www-data",
+            group="www-data",
         )
         # Write the rendered file out to disk
         with open(UNIT_PATH, "w+") as t:
@@ -221,7 +232,15 @@ class HelloJujuCharm(CharmBase):
         """Initialise the database and populate with initial tables required"""
         self.unit.status = MaintenanceStatus("creating database tables")
         # Call the application's `init.py` file to instantiate the database tables
-        check_call(["sudo", "-u", "www-data", f"{VENV_ROOT}/bin/python3", f"{APP_PATH}/init.py"])
+        check_call(
+            [
+                "sudo",
+                "-u",
+                "www-data",
+                f"{VENV_ROOT}/bin/python3",
+                f"{APP_PATH}/init.py",
+            ]
+        )
 
 
 if __name__ == "__main__":  # pragma: no cover

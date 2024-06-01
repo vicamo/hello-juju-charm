@@ -2,7 +2,7 @@
 # See LICENSE file for licensing details.
 #
 # Learn more about config at: https://juju.is/docs/sdk/config
-
+---
 options:
   application-repo:
     description: URL to the `hello-juju` application repository

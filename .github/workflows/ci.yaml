@@ -1,6 +1,10 @@
+---
 name: Hello Juju Charm Tests
 
 on: [push, pull_request]
+
+permissions:
+  contents: read
 
 jobs:
   hello-charm-tests:

@@ -1,5 +1,6 @@
 # Copyright 2021 Canonical
 # See LICENSE file for licensing details.
+---
 name: hello-juju
 description: |
   An introductory charm using the Charmed Operator Framework. Deploys a simple
