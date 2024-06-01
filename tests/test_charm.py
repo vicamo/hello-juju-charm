@@ -62,7 +62,8 @@ class TestCharm(unittest.TestCase):
     def test_on_install(self, _call, _render, _setup, _install):
         self.harness.charm.on.install.emit()
         self.assertEqual(
-            self.harness.charm.unit.status, MaintenanceStatus("installing pip and virtualenv")
+            self.harness.charm.unit.status,
+            MaintenanceStatus("installing pip and virtualenv"),
         )
         _install.assert_called_with(["python3-pip", "python3-virtualenv"])
         _setup.assert_called_once()
@@ -168,7 +169,8 @@ class TestCharm(unittest.TestCase):
     @mock.patch("pgsql.opslib.pgsql.client._leader_get")
     @mock.patch("pgsql.opslib.pgsql.client._leader_set")
     def test_on_database_master_changed(
-            self, _leader_set, _leader_get, _restart, _createdb, _render):
+        self, _leader_set, _leader_get, _restart, _createdb, _render
+    ):
         # Setup the mocks for leader-get and leader-set in the pgsql library
         _leader_get.return_value = {}
         _leader_set.return_value = None
@@ -186,7 +188,9 @@ class TestCharm(unittest.TestCase):
         # Run the handler
         self.harness.charm._on_database_master_changed(test_event)
         # Check the connection string was updated to use pg8000
-        self.assertEqual(self.harness.charm._stored.conn_str, "postgresql+pg8000://TEST")
+        self.assertEqual(
+            self.harness.charm._stored.conn_str, "postgresql+pg8000://TEST"
+        )
         _render.assert_called_once()
         _createdb.assert_called_once()
         _restart.assert_called_with("hello-juju")
@@ -213,7 +217,13 @@ class TestCharm(unittest.TestCase):
     @mock.patch("subprocess.call")
     def test_create_database_tables(self, _mock):
         # Define the args that 'check_call' should be called with
-        args = ["sudo", "-u", "www-data", f"{VENV_ROOT}/bin/python3", f"{APP_PATH}/init.py"]
+        args = [
+            "sudo",
+            "-u",
+            "www-data",
+            f"{VENV_ROOT}/bin/python3",
+            f"{APP_PATH}/init.py",
+        ]
         # Successful command execution returns 0
         _mock.return_value = 0
         # Execute the method
@@ -222,7 +232,8 @@ class TestCharm(unittest.TestCase):
         _mock.assert_called_once_with(args)
         # Ensure the unit status is set correctly
         self.assertEqual(
-            self.harness.charm.unit.status, MaintenanceStatus("creating database tables")
+            self.harness.charm.unit.status,
+            MaintenanceStatus("creating database tables"),
         )
 
     @mock.patch("os.chmod")
@@ -277,9 +288,13 @@ class TestCharm(unittest.TestCase):
         # Check the unit path is correct
         self.assertEqual(UNIT_PATH, Path("/etc/systemd/system/hello-juju.service"))
         # Check the state was updated with the port from the config
-        self.assertEqual(self.harness.charm._stored.port, self.harness.charm.config["port"])
+        self.assertEqual(
+            self.harness.charm._stored.port, self.harness.charm.config["port"]
+        )
         # Check the template is opened read-only in the first call to open
-        self.assertEqual(m.call_args_list[0][0], ("templates/hello-juju.service.j2", "r"))
+        self.assertEqual(
+            m.call_args_list[0][0], ("templates/hello-juju.service.j2", "r")
+        )
         # Check the systemd unit file is opened with "w+" mode in the second call to open
         self.assertEqual(m.call_args_list[1][0], (UNIT_PATH, "w+"))
         # Ensure the correct rendered template is written to file
@@ -299,7 +314,9 @@ class TestCharm(unittest.TestCase):
             # Call the method
             self.harness.charm._render_systemd_unit()
         # Ensure the rendered template is adjusted to take into consideration the port
-        m.return_value.write.assert_called_with(RENDERED_SYSTEMD_UNIT.replace(":80", ":8080"))
+        m.return_value.write.assert_called_with(
+            RENDERED_SYSTEMD_UNIT.replace(":80", ":8080")
+        )
         self.assertEqual(self.harness.charm._stored.port, 8080)
 
     @mock.patch("charms.operator_libs_linux.v0.apt.update")
@@ -334,7 +351,9 @@ class TestCharm(unittest.TestCase):
     @mock.patch("charm.Repo.clone_from")
     @mock.patch("charm.Path")
     @mock.patch("shutil.rmtree")
-    def test_setup_application(self, _rmtree, _path, _clone, _check_output, _render, _createdb):
+    def test_setup_application(
+        self, _rmtree, _path, _clone, _check_output, _render, _createdb
+    ):
         # Setup to dive into all the if branches on the first run
         # Make sure we try to remove the directory that "exists"
         _path.return_value.is_dir.return_value = True
@@ -347,12 +366,15 @@ class TestCharm(unittest.TestCase):
         self.assertEqual(VENV_ROOT, Path(f"{APP_PATH}/venv"))
         # Ensure we set the charm status correctly
         self.assertEqual(
-            self.harness.charm.unit.status, MaintenanceStatus("fetching application code")
+            self.harness.charm.unit.status,
+            MaintenanceStatus("fetching application code"),
         )
         # Check we try to remove the directory
         _rmtree.assert_called_with("/srv/app")
         # Check we set the stored repository where none exists
-        self.assertEqual(self.harness.charm._stored.repo, "https://github.com/juju/hello-juju")
+        self.assertEqual(
+            self.harness.charm._stored.repo, "https://github.com/juju/hello-juju"
+        )
         # Ensure we clone the repo
         _clone.assert_called_with("https://github.com/juju/hello-juju", APP_PATH)
         # Ensure we initialise the Python deps correctly

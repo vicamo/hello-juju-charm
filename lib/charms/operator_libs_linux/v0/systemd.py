@@ -93,7 +93,9 @@ def _systemctl(
     if quiet is not None:
         cmd.append("--quiet")
     if sub_cmd != "is-active":
-        logger.debug("Attempting to {} '{}' with command {}.".format(cmd, service_name, cmd))
+        logger.debug(
+            "Attempting to {} '{}' with command {}.".format(cmd, service_name, cmd)
+        )
     else:
         logger.debug("Checking if '{}' is active".format(service_name))
 
