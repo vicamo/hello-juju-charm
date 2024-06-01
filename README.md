@@ -38,9 +38,9 @@ Machine  State    DNS           Inst id        Series  AZ  Message
 0        started  10.14.25.117  juju-9f46aa-0  focal       Running
 ```
 
-With the example above, the page would be available at http://10.14.25.117
+With the example above, the page would be available at `http://10.14.25.117`
 in a browser. Once visited/refreshed a couple of times, the URL
-http://10.14.25.117/greetings would display a count of how many times the page
+`http://10.14.25.117/greetings` would display a count of how many times the page
 has been requested.
 
 ## Using PostgreSQL
