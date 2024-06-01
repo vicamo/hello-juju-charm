@@ -1,3 +1,4 @@
+---
 name: Hello Juju Charm Tests
 
 on: [push, pull_request]
